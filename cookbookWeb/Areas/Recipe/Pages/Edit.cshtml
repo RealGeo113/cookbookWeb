@@ -1,0 +1,231 @@
+﻿@page "{Id}"
+@model cookbookWeb.Areas.Recipes.Pages.Recipe.EditModel
+@{
+    ViewData["Title"] = "Edit Recipe";
+}
+
+
+<div class="container col-lg-8 justify-content-center">
+    <div class="row">
+        <h2>Edit recipe</h2>
+    </div>
+    <div class="col">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Input.RecipeId" value="@Model.Recipe.Id" />
+            <div class="row">
+                <div class="form-group col">
+                    <h5><label class="control-label">Image:</label></h5>
+                    <div class="custom-file">
+                        <input type="hidden" asp-for="Input.RecipeImagePath" value="@Html.DisplayFor(m => m.Recipe.ImagePath)" />
+                        <input asp-for="Input.Image" class="custom-file-input" type="file" id="image" />
+                        <label class="custom-file-label" for="image">Choose image...</label>
+                    </div>
+                    <span asp-validation-for="Input.Image" class="text-danger"></span>
+                </div>
+                <div class="recipe-image-container">
+                    <img src="@Html.DisplayFor(m => m.Recipe.ImagePath)" alt="Recipe Image" id="recipe-image" class="recipe-image"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @*Name*@
+                <h5><label class="control-label">Recipe name:</label></h5>
+                <input asp-for="Input.Name" class="form-control" value="@Model.Recipe.Name" />
+                <span asp-validation-for="Input.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @*Category*@
+                <h5><label class="control-label">Category:</label></h5>
+                <select name="category" class="custom-select">
+                    <option disabled>Open this select menu</option>
+                    @foreach (var category in Model.Categories)
+                    {
+                        @if (Model.Recipe.Category.Name == category.Name)
+                        {
+                        <option value="@category.Name" selected>@category.Name</option>
+                        }
+                        else
+                        {
+                        <option value="@category.Name">@category.Name</option>
+                        }
+                    }
+                </select>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @*Time*@
+                <h5><label class="control-label">Time:</label></h5>
+                <input asp-for="Input.Time" class="form-control" type="number" min="0" max="9999" value="@Model.Recipe.Time" />
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @*People*@
+                <h5><label class="control-label">People:</label></h5>
+                <input asp-for="Input.People" class="form-control" type="number" min="0" max="99" value="@Model.Recipe.People" />
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @*Description*@
+                <h5><label class="control-label">Description:</label></h5>
+                <textarea class="form-control description" id="@Html.IdFor(m => m.Recipe.Description)" name="@Html.NameFor(m => m.Recipe.Description)">@Html.DisplayFor(m => m.Recipe.Description)</textarea>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @*Ingredients*@
+                <h5><label class="control-label">Ingredients:</label></h5>
+                <div class="row" id="ingredients-container">
+
+                    @if (Model.Recipe.Ingredients.Count == 0)
+                    {
+                        <div class="ingredient row container" id="ingredient-container-0">
+                            <div class="col-lg-4 form-group">
+                                <label class="control-label">Name:</label>
+                                <input class="form-control" name="ingredients[0].Name" />
+                            </div>
+                            <div class="col-lg-4 form-group">
+                                <label class="control-label">Amount:</label>
+                                <input class="form-control" type="number" name="ingredients[0].Amount" />
+                            </div>
+                            <div class="col-lg-4 form-group">
+                                <label class="control-label">Unit:</label>
+                                <input class="form-control" name="ingredients[0].Unit" />
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        int i = 0;
+                        foreach (var ingredient in Model.Recipe.Ingredients)
+                        {
+                        <div class="ingredient row container" id="ingredient-container-@i">
+                            @if (i == 1)
+                            {
+                                <hr class="col-12" />
+                            }
+
+
+                            @if (i != 0)
+                            {
+                                <div class="col-12 d-flex justify-content-end">
+                                    <button class="btn btn-danger btn-remove-ingredient" type="button">Remove</button>
+                                </div>
+                            }
+                            <div class="col-lg-4 form-group">
+                                <label class="control-label">Name:</label>
+                                <input class="form-control" name="ingredients[@i].Name" value="@ingredient.Name" />
+                            </div>
+                            <div class="col-lg-4 form-group">
+                                <label class="control-label">Amount:</label>
+                                <input class="form-control" type="number" name="ingredients[@i].Amount" value="@ingredient.Amount" />
+                            </div>
+                            <div class="col-lg-4 form-group">
+                                <label class="control-label">Unit:</label>
+                                <input class="form-control" name="ingredients[@i].Unit" value="@ingredient.Unit" />
+                            </div>
+                            @if (i != 0)
+                            {
+                                <hr class="col-12" />
+                            }
+                        </div>
+                        i++;
+                        }
+
+                    }
+
+                </div>
+                <button class="btn btn-secondary" onclick="addIngredient();" type="button">Add ingredient</button>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @*Instructions*@
+                <h5><label class="control-label">Instructions:</label></h5>
+                <div id="instructions-container" class="row">
+                    @if (Model.Recipe.Instructions.Count == 0)
+                    {
+                    <div class="instruction row container" id="instruction-container-0">
+                        <div class="col-md-6 form-group">
+                            <label class="control-label">Content:</label>
+                            <textarea class="form-control instruction-content" name="instructions[0].Content"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="instruction-image-container">
+                                <img src="/Images/placeholder-image.png" alt="Recipe Image" class="instruction-image" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Image:</label>
+                                <div class="custom-file">
+                                    <input class="custom-file-input" type="file" id="image[0]" name="instructions[0].Image" />
+                                    <label class="custom-file-label" for="image[0]">Choose image...</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    else
+                    {
+                        int i = 0;
+                        foreach (var instruction in Model.Recipe.Instructions)
+                        {
+                        <div class="instruction row container" id="instruction-container-@i">
+                            @if (i == 1)
+                            {
+                                <hr class="col-12" />
+                            }
+
+                            @if (i != 0)
+                            {
+                                <div class="col-12 d-flex justify-content-end">
+                                    <button class="btn btn-danger btn-remove-instruction" type="button">Remove</button>
+                                </div>
+                            }
+                            <div class="col-md-6 form-group">
+                                <label class="control-label">Content:</label>
+                                <textarea class="form-control instruction-content" name="instructions[@i].Content">@instruction.Content</textarea>
+                            </div>
+                            <div class="col-md-6 image-form">
+                                <div class="instruction-image-container">
+                                    @if (instruction.ImagePath != null)
+                                    {
+                                        <img src="@instruction.ImagePath" alt="Recipe Image" class="instruction-image" id="instruction-@i-image" />
+                                    }
+                                    else
+                                    {
+                                        <img src="/Images/placeholder-image.png" alt="Recipe Image" class="instruction-image" id="instruction-@i-image" />
+                                    }
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Image:</label>
+                                    <div class="custom-file">
+                                        <input type="hidden" name="instructions[@i].ImagePath" value="@Html.DisplayFor(m => instruction.ImagePath)" />
+                                        <input class="custom-file-input" type="file" id="instuction-@i" name="instructions[0].Image" />
+                                        <label class="custom-file-label" for="instruction-@i">Choose image...</label>
+                                    </div>
+                                </div>
+                            </div>
+                            @if (i != 0)
+                            {
+                                <hr class="col-12" />
+                            }
+                        </div>
+                        i++;
+                        }
+                    }
+                </div>
+                <button class="btn btn-secondary" onclick="addInstruction();" type="button">Add instruction</button>
+                <span class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+    let instructionsContainer = document.getElementById('instructions-container');
+    instructionCounter = @Model.InstructionCount; 
+
+    let ingredientsContainer = document.getElementById('ingredients-container');
+    ingredientsCounter = @Model.IngredientsCount;
+    </script>
+}

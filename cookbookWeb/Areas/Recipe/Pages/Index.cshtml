@@ -1,0 +1,396 @@
+﻿@page "{Id}"
+@model cookbookWeb.Pages.RecipeModel
+@using Microsoft.AspNetCore.Identity
+@using cookbookWeb.Models
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@{
+    ViewData["Title"] = Model.Recipe.Name;
+}
+
+@* Might be link to user profile later
+    If user displaying this is the author of the recipe add edit button
+*@
+
+<div class="">
+
+    <div class="d-flex justify-content-between flex-row-reverse controls-container">
+        <div>
+            <a href="/Recipes" class="btn btn-primary">Back</a>
+        </div>
+        <div>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                if (Model.FavoriteRecipe != null)
+                {
+                    <button class="btn btn-danger favorite" id="favorite">Remove from favorites</button>
+                }
+                else
+                {
+                    <button class="btn btn-success favorite" id="favorite">Mark as favorite</button>
+                }
+
+                if (User.Identity.Name == Model.Recipe.Author.UserName || User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                {
+                    <a asp-area="Recipe" asp-page="/Edit" asp-route-id="@Model.Recipe.Id" class="btn btn-warning">Edit recipe</a>
+                    if (Model.Recipe.IsApproved)
+                    {
+                        <button class="btn btn-danger approve" id="approve">Disapprove</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-success approve" id="approve">Approve</button>
+                    }
+                    <button class="btn btn-danger delete" id="delete">Delete</button>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="recipe-container">
+        <div class="recipe-header">
+            <div class="row recipe-name-container" style="background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('@Html.DisplayFor(m => Model.Recipe.ImagePath)');">
+                <div class="col d-flex justify-content-center">
+                    <h1 class="align-self-center text-white recipe-name">@Html.DisplayFor(m => Model.Recipe.Name)</h1>
+                </div>
+            </div>
+            <div class="container d-flex row recipe-info-container align-items-center">
+                <div class="d-flex col-md-auto recipe-author-container align-items-center">
+                    @if (Model.Recipe.Author.ImagePath != null)
+                    {
+                        <div class="recipe-author-image">
+                            <img src="@Html.DisplayFor(m => Model.Recipe.Author.ImagePath)" alt="Author Profile Picture" class="recipe-author-image" />
+                        </div>
+                    }
+                    <div class="recipe-author-name-container">
+                        By
+                        @if (Model.Recipe.Author.FirstName != null && Model.Recipe.Author.LastName != null)
+                        {
+                            <span class="recipe-author-name font-weight-500">
+                                @Html.DisplayFor(m => Model.Recipe.Author.FullName)
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="recipe-author-name font-weight-500">
+                                @* Might be link to user profile later *@
+                                @Html.DisplayFor(m => Model.Recipe.Author.UserName)
+                            </span>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-auto flex-d align-items-center recipe-people-container">People: <span class="recipe-people font-weight-500">@Html.DisplayFor(m => Model.Recipe.People)</span></div>
+                <div class="col-md-auto flex-d align-items-center recipe-time-container">Time: <span class="recipe-time font-weight-500">@Html.DisplayFor(m => Model.Recipe.TimeFormatted)</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container col-lg-8 justify-content-center recipe-content">
+        <div class="container description">
+            <h4>Description</h4>
+            <p>@Html.DisplayFor(m => Model.Recipe.Description)</p>
+        </div>
+        <div class="container recipe-ingredients-container">
+            <h4>Ingredients</h4>
+            @if (Model.Recipe.Ingredients.Count == 0)
+            {
+                <p>Recipe does not have any ingredients</p>
+            }
+            else
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td>Name</td>
+                            <td>Amount</td>
+                            <td>Unit</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int i = 1;}
+                        @foreach (var ingredient in Model.Recipe.Ingredients)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>@Html.DisplayFor(m => ingredient.Name) </td>
+                                <td>@Html.DisplayFor(m => ingredient.Amount) </td>
+                                <td>@Html.DisplayFor(m => ingredient.Unit) </td>
+                            </tr>
+                            i++;
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+        <div class="container recipe-instructions-container">
+            <h4>Instructions</h4>
+            @if (Model.Recipe.Instructions.Count == 0)
+            {
+                <p>Recipe does not have any instructions</p>
+            }
+            else
+            {
+                int i = 1;
+                foreach (var instruction in Model.Recipe.Instructions)
+                {
+                    <div class="instruction-container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-12">
+                                <div class="instruction">
+                                    <h5>Step @i.</h5>
+                                    <p>@instruction.Content</p>
+                                </div>
+                            </div>
+                        </div>
+                        @if (instruction.ImagePath != null)
+                        {
+                            <div class="instruction-image-container row justify-content-center">
+                                <div class="col">
+                                    <img src="@instruction.ImagePath" alt="Instruction image" class="instruction-image" />
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    i++;
+                }
+            }
+        </div>
+        <div class="container recipe-comments-section">
+            <h4>Comments section</h4>
+            <div class="recipe-new-comment-container">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <form method="post">
+                        <input type="hidden" id="recipe-id" value="@Model.Recipe.Id" />
+                        <div class="form-group">
+                            <textarea class="form-control" id="comment-content"></textarea>
+                        </div>
+                        <button class="btn btn-primary" id="comment-submit" type="button">Submit</button>
+                    </form>
+                }
+                else
+                {
+                    <form>
+                        <input type="hidden" id="recipe-id" value="@Model.Recipe.Id" />
+                        <div class="form-group">
+                            <textarea class="form-control" id="comment-content" disabled>You need to log in to comment.</textarea>
+                        </div>
+                        <button class="btn btn-primary" id="comment-submit" type="button" disabled>Submit</button>
+                    </form>
+                }
+
+            </div>
+            <div class="recipe-comments-container" id="recipe-comments-container">
+                @if (Model.Comments.Count == 0)
+                {
+                    <div class="row">
+                        <p>No one commented yet.</p>
+                    </div>
+                }
+                else
+                {
+                    foreach (var comment in Model.Comments)
+                    {
+                        <div class="recipe-comment">
+                            <div class="comment-info-container row">
+                                @if (comment.Author.FirstName != null && comment.Author.LastName != null)
+                                {
+                                    <div class="col comment-author">@comment.Author.FullName</div>
+                                }
+                                else if (comment.Author.FirstName != null)
+                                {
+                                    <div class="col comment-author">@comment.Author.FirstName</div>
+                                }
+                                else
+                                {
+                                    <div class="col comment-author">@comment.Author.UserName</div>
+                                }
+                                <div class="col comment-creation-date">@comment.CreationDate</div>
+                                @if((User.IsInRole("SuperAdmin") || User.IsInRole("Admin")) || User.Identity.Name == comment.Author.UserName)
+                                {
+                                    <div class="d-flex flex-row-reverse">
+                                        <button class="btn btn-danger delete-comment" type="button">Delete</button>
+                                        <input type="hidden" value="@comment.Id"/>
+                                    </div>
+                                }
+                            </div>
+                            <div class="comment-content row">
+                                <div class="col">
+                                    <p> @comment.Content </p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+@if (SignInManager.IsSignedIn(User)){
+        <script>
+            $(document).ready(function () {
+                $('#comment-submit').click(function () {
+                    let content = $("#comment-content").val();
+                    let recipeId = $("#recipe-id").val();
+                    $.ajax({
+                    type: 'post',
+                    url: '@Url.Page("/Index", "Comment")',
+                    data: { 'recipeId': recipeId, 'content': content },
+                    dataType: 'json',
+                    headers: {
+                        RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (result) {
+                        @{
+                            string name;
+                            if (Model.CurrentUser.FirstName != null && Model.CurrentUser.LastName != null)
+                            {
+                                name = Model.CurrentUser.FullName;
+                            }
+                            else if (Model.CurrentUser.FirstName != null)
+                            {
+                                name = Model.CurrentUser.FirstName;
+                            }
+                            else
+                            {
+                                name = Model.CurrentUser.UserName;
+                            }
+                        }
+                            let comment = '<div class="recipe-comment">' +
+                                '<div class="comment-info-container row">' +
+                                '<div class="col comment-author">' + '@Html.Raw(name)' + '</div>' +
+                                '<div class="col comment-creation-date\">' + DateNow() +
+                                '</div>' +
+                                '<div><button class="btn btn-danger delete-comment" onclick="deleteComment(this);" type="button">Delete</button>' +
+                                '<input type="hidden" value="' + result + '"/>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="comment-content row">' +
+                                '<div class="col"><p>' + content + '</p></div>' +
+                                '</div></div>';
+
+                            $("#recipe-comments-container").prepend(comment);
+                        $("#comment-content").val("");
+                        }
+                    });
+                });
+
+                $('#favorite').click(function () {
+                    let recipeId = $("#recipe-id").val();
+                    $.ajax({
+                        type: 'post',
+                        url: '@Url.Page("/Index", "Favorite")',
+                        data: { 'recipeId': recipeId },
+                        dataType: 'json',
+                        headers: {
+                            RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function () {
+                            let favorite = $('#favorite')
+                            favorite.toggleClass('btn-success');
+                            favorite.toggleClass('btn-danger');
+
+                            if (favorite.hasClass('btn-success')) {
+                                favorite.text('Mark as favorite');
+                            } else {
+                                favorite.text('Remove from favorite');
+                            }
+                        }
+                    });
+                });
+        });
+        </script>
+        }
+        @if (User.Identity.Name == Model.Recipe.Author.UserName || (User.IsInRole("SuperAdmin") || User.IsInRole("Admin")))
+        {
+<script>
+            $('#delete').click(function () {
+                    let recipeId = $("#recipe-id").val();
+                $.ajax({
+                    type: 'post',
+                    url: '@Url.Page("/Index", "Delete")',
+                    data: { 'recipeId': recipeId },
+                    dataType: 'json',
+                    headers:
+                    {
+                        RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function () {
+                    window.location.replace('@Url.Page("/Index", new { area = "Recipes"})');
+                    }
+                    });
+            });
+            $('.delete-comment').click(function (item) {
+                let comment = item.target.nextElementSibling;
+                let commentId = comment.value;
+                $.ajax({
+                type: 'post',
+                    url: '@Url.Page("/Index", "DeleteComment")',
+                    data: { 'commentId': commentId },
+                    dataType: 'json',
+                    headers:
+                    {
+                    RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function() {
+                        item.target.closest(".recipe-comment").remove();
+                    }
+            });
+            });
+
+    function deleteComment(item) {
+        console.log(item);
+                let comment = item.nextSibling;
+                let commentId = comment.value;
+                $.ajax({
+                type: 'post',
+                    url: '@Url.Page("/Index", "DeleteComment")',
+                    data: { 'commentId': commentId },
+                    dataType: 'json',
+                    headers:
+                    {
+                    RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function() {
+                        item.closest(".recipe-comment").remove();
+                    }
+            });
+    }
+</script>
+        }
+        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin")){
+        <script>
+        $('#approve').click(function () {
+                let recipeId = $("#recipe-id").val();
+                $.ajax({
+                type: 'post',
+                    url: '@Url.Page("/Index", "Approve")',
+                    data: { 'recipeId': recipeId },
+                    dataType: 'json',
+                    headers:
+                    {
+                    RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function() {
+                        let approve = $('#approve')
+                        approve.toggleClass('btn-success');
+                        approve.toggleClass('btn-danger');
+
+                        if (approve.hasClass('btn-success'))
+                        {
+                            approve.text('Approve');
+                        }
+                        else
+                        {
+                            approve.text('Disapprove');
+                        }
+                    }
+                });
+        });
+        </script>
+        }
+}

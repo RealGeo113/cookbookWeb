@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using cookbookWeb.Data;
+using cookbookWeb.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -10,16 +13,13 @@ namespace cookbookWeb.Pages
 {
     public class IndexModel : PageModel
     {
+        private readonly ApplicationDbContext _db;
         private readonly ILogger<IndexModel> _logger;
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(ILogger<IndexModel> logger, ApplicationDbContext db)
         {
             _logger = logger;
-        }
-
-        public void OnGet()
-        {
-
+            _db = db;
         }
     }
 }

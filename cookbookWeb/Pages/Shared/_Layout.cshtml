@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using cookbookWeb.Models
+@using cookbookWeb.Data 
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@inject ApplicationDbContext DbContext 
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -17,19 +24,27 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                        <li class="nav-item dropdown show">
+                            <a class="nav-link text-dark dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="recipe-categories">Recipes</a>
+                            <ul class="dropdown-menu" aria-labelledby="recipe-categories">
+                                <a class="dropdown-item text-dark" asp-area="Recipes" asp-page="/Index" asp-route-category="">All Recipes</a>
+                                @foreach (var category in DbContext.Categories.ToList())
+                                {
+                                    <li><a class="dropdown-item text-dark" asp-area="Recipes" asp-page="/Index" asp-route-category="@category.Name">@category.Name</a></li>
+                                }
+                            </ul>
                         </li>
-                    </ul>
-                </div>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item"> <a class="nav-link text-dark" asp-area="" asp-page="/Login">Login</a> </li>
-                        <li class="nav-item"> <a class="nav-link text-dark" asp-area="" asp-page="/Register">Register</a> </li>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Recipes" asp-page="/Index" asp-route-category="Favorites">Favorites</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
