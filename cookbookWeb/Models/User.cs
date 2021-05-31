@@ -1,20 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace cookbookWeb.Models
 {
-    public class User
+    public class User : IdentityUser<long>
     {
-        private int _id;
-        private string _username;
-        private string _name;
-        private string _surrname;
-        private string _description;
-        private string _emailAddress;
-        private string _imagePath;
+        [ProtectedPersonalData]
+        public string FirstName { get; set; }
 
-        private bool _isAuthenticated;
+        [ProtectedPersonalData]
+        public string LastName { get; set; }
+
+        public string FullName { get {return FirstName + " " + LastName; } }
+
+        public string Description { get; set; }
+
+        public string ImagePath { get; set; }
+
+        public ICollection<FavoriteRecipe> FavoriteRecipes { get; set; }
     }
 }

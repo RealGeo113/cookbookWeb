@@ -1,0 +1,80 @@
+﻿@page  "{category?}"
+@model cookbookWeb.Pages.RecipesModel
+@using Microsoft.AspNetCore.Identity
+@using cookbookWeb.Models
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@{
+    ViewData["Title"] = "Recipes";
+}
+
+<div class="container">
+    <div class="row">
+        <h5>Recipes</h5>
+    </div>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        if (User.IsInRole("Moderator"))
+        {
+        <div class="d-flex justify-content-between controls-container">
+            <a asp-area="Recipe" asp-page="/Add" class="btn btn-success">Add recipe</a>
+        </div>
+        }
+    }
+    
+    @if (Model.Recipes.Count == 0)
+    {
+        <p>
+            No Recipes Found
+        </p>
+    }
+    else
+    {
+<div class="recipes-container">
+    @foreach (var recipe in Model.Recipes)
+    {
+        if (recipe.IsApproved)
+        {
+            <div class="row recipes">
+                <div class="col-md-6 recipes-image-container">
+                    <img class="recipes-image" src="@Html.DisplayFor(m => recipe.ImagePath)" alt="Recipe Image" />
+                </div>
+                <div class="col-md-6 recipes-info">
+                    <div class="col recipes-name">
+                        <h2>@Html.DisplayFor(m => recipe.Name)</h2>
+                    </div>
+                    <div>
+                        <div class="recipes-author">By: @Html.DisplayFor(m => recipe.Author.FullName)</div>
+                        <div class="recipes-people">People: @Html.DisplayFor(m => recipe.People)</div>
+                        <div class="recipes-time">Time: @Html.DisplayFor(m => recipe.Time)</div>
+                        <div class="recipes-description">@Html.DisplayFor(m => recipe.Description)</div>
+                        <div class="recipes-action d-flex flex-row-reverse align-bottom"><a asp-area="Recipe" asp-route-id="@recipe.Id">Open</a></div>
+                    </div>
+                </div>
+            </div>
+        }
+        else if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
+        {
+            <div class="row recipes">
+                <div class="col-md-6 recipes-image-container">
+                    <img class="recipes-image" src="@Html.DisplayFor(m => recipe.ImagePath)" alt="Recipe Image" />
+                </div>
+                <div class="col-md-6 recipes-info">
+                    <div class="col recipes-name">
+                        <h2>@Html.DisplayFor(m => recipe.Name) <span class="text-danger">(Not approved)</span></h2>
+                    </div>
+                    <div>
+                        <div class="recipes-author">By: @Html.DisplayFor(m => recipe.Author.FullName)</div>
+                        <div class="recipes-people">People: @Html.DisplayFor(m => recipe.People)</div>
+                        <div class="recipes-time">Time: @Html.DisplayFor(m => recipe.Time)</div>
+                        <div class="recipes-description">@Html.DisplayFor(m => recipe.Description)</div>
+                        <div class="recipes-action d-flex flex-row-reverse align-bottom"><a asp-area="Recipe" asp-route-id="@recipe.Id">Open</a></div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    }
+</div>
+    }
+</div>

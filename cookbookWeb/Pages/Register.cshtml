@@ -4,8 +4,51 @@
     ViewData["Title"] = "Register";
 }
 
-<div>
-    <h1 class="display-4">Register now!</h1>
-    <p>If you are already registered</p>
-    <p><a asp-area="" asp-page="/Login">Log in!</a></p>
+<h1>Register</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-5">
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="Input.EmailAddress" class="control-label"></label>
+                <input asp-for="Input.EmailAddress" class="form-control" />
+                <span asp-validation-for="Input.EmailAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Username" class="control-label"></label>
+                <input asp-for="Input.Username" class="form-control" />
+                <span asp-validation-for="Input.Username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Password" class="control-label"></label>
+                <input asp-for="Input.Password" class="form-control" type="password" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.ConfirmedPassword" class="control-label">Confirm password</label>
+                <input asp-for="Input.ConfirmedPassword" class="form-control" type="password" />
+                <span asp-validation-for="Input.ConfirmedPassword" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Register" class="btn btn-primary" />
+            </div>
+            <b>@ViewBag.message</b>
+
+            <div>
+                <a asp-page="/Index">Back to List</a>
+            </div>
+
+        </form>
+    </div>
+    <div class="col-md-5">If you are registered already, <a asp-page="/Login">Log in</a>!
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    </div>
 </div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}  
