@@ -1,4 +1,4 @@
-﻿@page  "{category?}"
+﻿@page "{category?}/{p?}"
 @model cookbookWeb.Pages.RecipesModel
 @using Microsoft.AspNetCore.Identity
 @using cookbookWeb.Models
@@ -8,10 +8,45 @@
     ViewData["Title"] = "Recipes";
 }
 
+@section Stylesheets{
+    <link rel="stylesheet" href="~/css/recipes.css" />
+}
+
 <div class="container">
     <div class="row">
-        <h5>Recipes</h5>
+        <div class="category-container flex-row">
+            @{
+                var isActive = (Model.Category == "" || Model.Category == null) ? "category-active" : "";
+            }
+            <a class="category-link" asp-area="Recipes" asp-page="/Index" asp-route-category="" >
+                <div class="category @isActive d-flex">
+                    All Recipes
+                </div>
+            </a>
+            
+            @{ foreach (Category category in Model.Categories)
+                {
+                isActive = (Model.Category == category.Name.ToLower()) ? "category-active" : "";
+                <a class="category-link" asp-area="Recipes" asp-page="/Index" asp-route-category="@category.Name">
+                    <div class="category @isActive d-flex">
+                        @category.Name
+                    </div>    
+                </a>
+                }
+             }
+
+            @{
+                isActive = (Model.Category == "favorites") ? "category-active" : "";
+            }
+
+            <a class="category-link" asp-area="Recipes" asp-page="/Index" asp-route-category="Favorites">
+                <div class="category @isActive d-flex">
+                    Favorites
+                </div>    
+            </a>
+        </div>
     </div>
+
     @if (SignInManager.IsSignedIn(User))
     {
         if (User.IsInRole("Moderator"))
@@ -22,7 +57,7 @@
         }
     }
     
-    @if (Model.Recipes.Count == 0)
+    @if (Model.Recipes.Count == 0 || (Model.Recipes.Where(r => r.IsApproved == true).ToList().Count == 0 && !User.IsInRole("Admin")))
     {
         <p>
             No Recipes Found
@@ -30,51 +65,63 @@
     }
     else
     {
-<div class="recipes-container">
+    <div class="recipes-container">
     @foreach (var recipe in Model.Recipes)
     {
-        if (recipe.IsApproved)
-        {
-            <div class="row recipes">
-                <div class="col-md-6 recipes-image-container">
-                    <img class="recipes-image" src="@Html.DisplayFor(m => recipe.ImagePath)" alt="Recipe Image" />
+        if (recipe.IsApproved || (User.IsInRole("Admin")))
+        {  
+        <div class="row recipe">
+            @**@
+                <div class="col recipe-image-container">
+                    <a asp-area="Recipe" asp-route-id="@recipe.Id">
+                        <img class="recipe-image" src="@Html.DisplayFor(m => recipe.ImagePath)" alt="Recipe Image" />
+                        <div class="recipe-overlay">
+                            <h5>Click to open...</h5>
+                        </div>
+                    </a>
                 </div>
-                <div class="col-md-6 recipes-info">
-                    <div class="col recipes-name">
+            <div class="col-md-6 recipe-info">
+                <div class="recipe-name">
+                    @{if(!recipe.IsApproved){
+                        <h2>@Html.DisplayFor(m => recipe.Name) <span class="text-danger">NOT APPROVED</span></h2>
+                    }else{
                         <h2>@Html.DisplayFor(m => recipe.Name)</h2>
-                    </div>
-                    <div>
-                        <div class="recipes-author">By: @Html.DisplayFor(m => recipe.Author.FullName)</div>
-                        <div class="recipes-people">People: @Html.DisplayFor(m => recipe.People)</div>
-                        <div class="recipes-time">Time: @Html.DisplayFor(m => recipe.Time)</div>
-                        <div class="recipes-description">@Html.DisplayFor(m => recipe.Description)</div>
-                        <div class="recipes-action d-flex flex-row-reverse align-bottom"><a asp-area="Recipe" asp-route-id="@recipe.Id">Open</a></div>
-                    </div>
+                    }}
+                    
+                </div>
+                <div>
+                    <div class="recipe-author">By: @Html.DisplayFor(m => recipe.Author.FullName)</div>
+                    <div class="recipe-people">People: @Html.DisplayFor(m => recipe.People)</div>
+                    <div class="recipe-time">Time: @Html.DisplayFor(m => recipe.Time)</div>
+                    <div class="recipe-description">@Html.DisplayFor(m => recipe.Description)</div>
+                    <div class="recipe-action d-flex flex-row-reverse align-bottom"><a asp-area="Recipe" asp-route-id="@recipe.Id"></a></div>
                 </div>
             </div>
+        </div> 
+           
         }
-        else if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
-        {
-            <div class="row recipes">
-                <div class="col-md-6 recipes-image-container">
-                    <img class="recipes-image" src="@Html.DisplayFor(m => recipe.ImagePath)" alt="Recipe Image" />
-                </div>
-                <div class="col-md-6 recipes-info">
-                    <div class="col recipes-name">
-                        <h2>@Html.DisplayFor(m => recipe.Name) <span class="text-danger">(Not approved)</span></h2>
-                    </div>
-                    <div>
-                        <div class="recipes-author">By: @Html.DisplayFor(m => recipe.Author.FullName)</div>
-                        <div class="recipes-people">People: @Html.DisplayFor(m => recipe.People)</div>
-                        <div class="recipes-time">Time: @Html.DisplayFor(m => recipe.Time)</div>
-                        <div class="recipes-description">@Html.DisplayFor(m => recipe.Description)</div>
-                        <div class="recipes-action d-flex flex-row-reverse align-bottom"><a asp-area="Recipe" asp-route-id="@recipe.Id">Open</a></div>
-                    </div>
-                </div>
-            </div>
-        }
+    }
+    </div>
+    }
+</div>
+<div class="container">
+    @{
+        var prevDisabled = !Model.Recipes.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.Recipes.HasNextPage ? "disabled" : "";
+    }
 
-    }
+        <a asp-area="Administrator" asp-page="/Recipes/Index"
+        asp-route-p="@(Model.Recipes.PageIndex - 1)"
+        class="btn btn-primary @prevDisabled">
+            Previous
+        </a>
+        <a asp-area="Administrator" asp-page="/Recipes/Index"
+        asp-route-p="@(Model.Recipes.PageIndex + 1)"
+        class="btn btn-primary @nextDisabled">
+            Next
+        </a>
 </div>
-    }
-</div>
+
+@section Scripts {
+
+}

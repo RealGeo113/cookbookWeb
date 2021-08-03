@@ -1,0 +1,60 @@
+﻿@page "{p?}"
+@model cookbookWeb.Areas.Administrator.Pages.Recipes.RecipesModel
+@using cookbookWeb.Models
+@{
+    ViewData["Title"] = "Recipes";
+}
+
+<div class="container">
+    <h5>Recipes</h5>
+    <table class="table table-hover">
+        <thead class="thead-light text-center">
+            <tr>
+                <th>Name</th>
+                <th>Author</th>
+                <th>Creation Date</th>
+                <th>Is Approved</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ foreach (Recipe recipe in Model.Recipes)
+               {
+               <tr>
+                   <td>@recipe.Name</td>
+                   <td>@recipe.Author.FullName</td>
+                   <td>@recipe.CreationDate</td>
+                   @if(recipe.IsApproved){
+                       <td class="text-success">True</td>
+                       }
+                   else{
+                       <td class="text-danger">False</td>
+                   }
+                   <td>
+                       <div class="d-flex flex-row justify-content-center">
+                        <a class="btn btn-success btn-action" asp-area="Recipe" asp-page="/Index" asp-route-id="@recipe.Id">Display</a>
+                        <a class="btn btn-warning btn-action" asp-area="Recipe" asp-page="/Edit" asp-route-id="@recipe.Id">Edit</a>
+                        <a class="btn btn-danger btn-action">Delete</a>
+                       </div>
+                    </td>
+               </tr>
+               }
+            }
+        </tbody>
+    </table>
+    @{
+        var prevDisabled = !Model.Recipes.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.Recipes.HasNextPage ? "disabled" : "";
+    }
+
+        <a asp-area="Administrator" asp-page="/Recipes/Index"
+        asp-route-p="@(Model.Recipes.PageIndex - 1)"
+        class="btn btn-primary @prevDisabled">
+            Previous
+        </a>
+        <a asp-area="Administrator" asp-page="/Recipes/Index"
+        asp-route-p="@(Model.Recipes.PageIndex + 1)"
+        class="btn btn-primary @nextDisabled">
+            Next
+        </a>
+</div>

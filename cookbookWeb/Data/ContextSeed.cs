@@ -1,4 +1,5 @@
-﻿using cookbookWeb.Models;
+﻿using cookbookWeb.Classes;
+using cookbookWeb.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,8 @@ namespace cookbookWeb.Data
                 FirstName = "Grzegorz",
                 LastName = "Łukaszun",
                 EmailConfirmed = true,
-                PhoneNumberConfirmed = true
+                PhoneNumberConfirmed = true,
+                Joined = DateTime.Now
             };
             if (userManager.Users.All(u => u.Id != defaultUser.Id))
             {

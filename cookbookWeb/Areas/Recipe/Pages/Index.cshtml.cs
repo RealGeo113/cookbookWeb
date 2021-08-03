@@ -33,7 +33,7 @@ namespace cookbookWeb.Pages
         public FavoriteRecipe FavoriteRecipe {get; set; }
         public User CurrentUser { get; set; }
         public ICollection<Comment> Comments { get; set; }
-        public IActionResult OnGet(long Id)
+        public async Task<IActionResult> OnGet(long Id)
         {
             if (ModelState.IsValid)
             {
@@ -50,6 +50,8 @@ namespace cookbookWeb.Pages
                 if (Recipe != null)
                 {
                     Comments = _db.Comments.Include(c => c.Author).Where(c => c.RecipeId == Recipe.Id).OrderByDescending(c => c.CreationDate).ToList();
+                    Recipe.Views++;
+                    await _db.SaveChangesAsync();
                     return Page();
                 }
                 return NotFound($"Unable to load recipe with Id: '{Id}'.");
@@ -89,7 +91,8 @@ namespace cookbookWeb.Pages
             FavoriteRecipe favoriteRecipe = new FavoriteRecipe
             {
                 User = await _db.Users.Where(u => u.Id == long.Parse(_userManager.GetUserId(User))).SingleOrDefaultAsync(),
-                Recipe = await _db.Recipes.Where(r => r.Id == long.Parse(recipeId)).SingleOrDefaultAsync()
+                Recipe = await _db.Recipes.Where(r => r.Id == long.Parse(recipeId)).SingleOrDefaultAsync(),
+                AddedDate = DateTime.Now
             };
 
             FavoriteRecipe recipe = _db.FavoriteRecipes.Where(fr => fr.Recipe == favoriteRecipe.Recipe).Where(fr => fr.User == favoriteRecipe.User).SingleOrDefault();

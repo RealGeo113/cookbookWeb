@@ -17,5 +17,7 @@ namespace cookbookWeb.Models
         [ForeignKey("User")]
         public long UserId { get; set; }
         public User User { get; set; }
+
+        public DateTime AddedDate { get; set; }
     }
 }

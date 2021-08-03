@@ -4,6 +4,9 @@
     ViewData["Title"] = "Edit Recipe";
 }
 
+@section Stylesheets{
+    <link rel="stylesheet" href="~/css/recipe.css" />
+}
 
 <div class="container col-lg-8 justify-content-center">
     <div class="row">
@@ -199,7 +202,7 @@
                                     <div class="custom-file">
                                         <input type="hidden" name="instructions[@i].ImagePath" value="@Html.DisplayFor(m => instruction.ImagePath)" />
                                         <input class="custom-file-input" type="file" id="instuction-@i" name="instructions[0].Image" />
-                                        <label class="custom-file-label" for="instruction-@i">Choose image...</label>
+                                        <label class="custom-file-label image-label" for="instruction-@i">Choose image...</label>
                                     </div>
                                 </div>
                             </div>

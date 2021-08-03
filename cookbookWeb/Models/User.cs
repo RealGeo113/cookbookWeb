@@ -12,16 +12,12 @@ namespace cookbookWeb.Models
     {
         [ProtectedPersonalData]
         public string FirstName { get; set; }
-
         [ProtectedPersonalData]
         public string LastName { get; set; }
-
         public string FullName { get {return FirstName + " " + LastName; } }
-
         public string Description { get; set; }
-
         public string ImagePath { get; set; }
-
         public ICollection<FavoriteRecipe> FavoriteRecipes { get; set; }
+        public DateTime Joined { get; set; }
     }
 }

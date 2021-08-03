@@ -8,9 +8,9 @@
     ViewData["Title"] = Model.Recipe.Name;
 }
 
-@* Might be link to user profile later
-    If user displaying this is the author of the recipe add edit button
-*@
+@section Stylesheets{
+    <link rel="stylesheet" href="~/css/recipe.css" />
+}
 
 <div class="">
 
@@ -362,7 +362,7 @@
     }
 </script>
         }
-        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin")){
+        @if (User.IsInRole("Admin")){
         <script>
         $('#approve').click(function () {
                 let recipeId = $("#recipe-id").val();

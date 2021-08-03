@@ -65,7 +65,13 @@ namespace cookbookWeb.Models
         public ICollection<Comment> Comments  { get; set; }
         public ICollection<RecipeRating> Ratings { get; set; }
         public ICollection<FavoriteRecipe> FavoriteRecipes { get; set; }
+        public int FavoriteRecipeCount
+        {
+            get { return FavoriteRecipes.Count; }
+        }
+        public int Views { get; set; }
 
         public bool IsApproved { get; set; }
+        public bool IsPrivate  { get; set; }
     }
 }

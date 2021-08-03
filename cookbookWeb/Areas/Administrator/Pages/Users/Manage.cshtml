@@ -1,0 +1,87 @@
+@page "{id}"
+@model cookbookWeb.Areas.Administrator.Pages.Users.UserModel
+@using cookbookWeb.Models
+@using cookbookWeb.Data
+@inject UserManager<User> userManager
+@inject ApplicationDbContext db 
+@{
+    ViewData["Title"] = $"User {Model.DisplayedUser.UserName}";
+}
+
+<div class="container">
+    <form method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="InputUser.Id" value="@Model.DisplayedUser.Id" />
+            <div class="row d-flex">
+                <div class="form-group col-sm-8">
+                    <h5><label class="control-label">Image:</label></h5>
+                    <div class="custom-file">
+                        <input asp-for="Input.Image" class="custom-file-input" type="file" id="profile" />
+                        <label class="custom-file-label" for="image">Choose image...</label>
+                    </div>
+                    <span asp-validation-for="InputUser.ImagePath" class="text-danger"></span>
+                </div>
+                <div class="recipe-image-container col-sm">
+                    @{if(Model.DisplayedUser.ImagePath == null){
+                            <img src="/Images/default-profile.png" alt="User Profile Image" id="profile-image" class="recipe-image"/>
+                        }else{
+                            <img src="@Html.DisplayFor(m => m.DisplayedUser.ImagePath)" alt="User Profile Image" id="profile-image" class="profile-image"/>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label class="control-label"><h5>First name:</h5></label>
+                    <input asp-for="InputUser.FirstName" class="form-control" value="@Model.DisplayedUser.FirstName"/>
+                    <span asp-validation-for="InputUser.FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label class="control-label"><h5>Last name:</h5></label>
+                    <input asp-for="InputUser.LastName" class="form-control" value="@Model.DisplayedUser.LastName"/>
+                    <span asp-validation-for="InputUser.LastName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                @*Name*@
+                <label class="control-label"><h5>Username:</h5></label>
+                <input asp-for="InputUser.UserName" class="form-control" value="@Model.DisplayedUser.UserName" required/>
+                <span asp-validation-for="InputUser.UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @*Name*@
+                <label class="control-label"><h5>Email address:</h5></label>
+                <input asp-for="InputUser.Email" class="form-control" value="@Model.DisplayedUser.Email" required/>
+                <span asp-validation-for="InputUser.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @*Name*@
+                <label class="control-label"><h5>Password:</h5></label>
+                <input asp-for="Input.Password" class="form-control"/>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @*Name*@
+                <label class="control-label"><h5>Confirm Password:</h5></label>
+                <input asp-for="Input.ConfirmPassword" class="form-control"/>
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @*Name*@
+                <label class="control-label"><h5>Roles</h5></label>
+                <select asp-for="Input.Role" class="form-control">
+                    @{var roleSelected = false;
+                        foreach(var role in db.Roles.ToList()){
+                        
+                        if(userManager.IsInRoleAsync(Model.DisplayedUser, role.Name).Result && !roleSelected){
+                            <option value="@role.Name" selected>@role.Name</option>
+                            roleSelected = true;
+                        }else{
+                            <option value="@role.Name">@role.Name</option>
+                        }
+                    }}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+</div>

@@ -74,145 +74,33 @@ body {
     margin: 10px 0;
 }
 
-.recipes{
-    margin: 20px 0;
+.btn-action{
+    margin-left: 5px;
 }
 
-.recipes-image-container {
-    height: 250px;
-}
-.recipes-image {
+.profile-image{
     width: 100%;
     height: 100%;
+    max-width: 200px;
     object-fit: cover;
 }
 
-.recipe-info-container {
-    padding: 10px;
+/*Custom */
+
+.image{
+  max-height: 100%;
+  width: 100%;
+  object-fit: cover;
 }
 
-.recipe-image-container {
-    margin-bottom: 20px;
-    max-height: 200px;
+.image-label {
+  overflow: hidden;
+  white-space: nowrap;
+  padding-right: 6em;
+  text-overflow: ellipsis;
 }
 
-.recipe-image{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.recipe-name-container {
-    height: 400px;
-    background-repeat: no-repeat !important;
-    background-position: center !important;
-    background-size: cover !important;
-}
-
-.recipe-author-image {
-    vertical-align: middle;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-}
-
-.recipe-author-name-container {
-    
-}
-
-.font-weight-500 {
-    font-weight: 500;
-}
-.recipe-author-name {
-    
-}
-
-.recipe-content{
-    margin-top: 40px;
-}
-
-.recipe-content h4{
-    margin: 40px 0 15px 0; 
-}
-
-.description{
-    resize: none;
-
-    height: 200px !important;
-}
-
-.instruction-container {
-    margin-bottom: 30px;
-}
-
-.instruction-content {
-    resize: none;
-    height: 300px !important;
-}
-
-.instruction-image-container {
-    margin: 30px 0;
-}
-
-.instruction {
-    margin-bottom: 10px;
-}
-
-.instruction-image{
-    max-height: 200px;
-    width: 100%;
-    object-fit: cover;
-}
-
-.recipe-ingredients-container, .recipe-instructions-container, .recipe-comments-section{
-    margin: 20px 0;
-}
-
-.recipe-comments-container{
-    margin: 20px 0;
-}
-
-#comment-content{
-    resize: none;
-    width: 100%;
-    height: 150px;
-}
-
-@media only screen and (max-width: 768px) {
-    .recipe-content {
-        margin-top: 20px;
-    }
-
-    
-    .instruction-image-container {
-        margin: 10px 0;
-    }
-
-    .instruction-content {
-        height: 100px !important;
-    }
-
-    .instruction-image {
-        max-height: 200px;
-    }
-}
-
-@media only screen and (max-width: 600px) {
-    .recipes-image-container{
-        height: 200px;
-    }
-
-    .recipe-name-container {
-        height: 250px;
-    }
-    .recipe-name {
-        font-size:30px;
-    }
-
-    .recipe-content {
-        margin-top: 10px;
-    }
-}
+/*Media Queries*/
 
 @media all and (min-width: 992px) {
     .navbar .nav-item .dropdown-menu {

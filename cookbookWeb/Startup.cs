@@ -31,9 +31,21 @@ namespace cookbookWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthorization(options => {
+                options.AddPolicy("AdministratorRightsRequired",
+                 policy => {
+                     policy.RequireRole("Admin");
+                     policy.RequireRole("SuperAdmin");
+                 });
+            });
+
             services.AddRazorPages().AddRazorPagesOptions(options => {
                 options.Conventions.AddPageRoute("/Recipe", "{*Id}");
                 options.Conventions.AddPageRoute("/Recipe/Edit", "{*Id}");
+                options.Conventions.AddPageRoute("/Recipes", "{category?}/{page?}");
+                options.Conventions.AddPageRoute("/Recipes", "{p?}");
+                options.Conventions.AddPageRoute("/Recipes", "{category?}");
+                options.Conventions.AuthorizeAreaFolder("Administrator", "/", "AdministratorRightsRequired");
                 //options.Conventions.AddAreaPageRoute("Recipe","/Recipe", "{*id}");
                 //options.Conventions.AddAreaPageRoute("Recipe", "/Recipe/Edit", "{*id}");
             });

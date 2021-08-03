@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS8632: Adnotacja dla typów referencyjnych dopuszczających wartość null powinna być używana tylko w kodzie z kontekstem adnotacji „#nullable”.
+dotnet_diagnostic.CS8632.severity = none

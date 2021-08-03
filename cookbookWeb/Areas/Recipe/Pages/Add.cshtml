@@ -4,6 +4,10 @@
     ViewData["Title"] = "Add Recipe";
 }
 
+@section Stylesheets{
+    <link rel="stylesheet" href="~/css/recipe.css" />
+}
+
 <div class="container col-lg-10 justify-content-center">
     <div class="row">
         <h2>Add recipe</h2>
@@ -103,7 +107,7 @@
                                 <label class="control-label">Image:</label>
                                 <div class="custom-file">
                                     <input class="custom-file-input" type="file" id="instruction-0" name="instructions[0].Image" />
-                                    <label class="custom-file-label" for="instuction-0">Choose image...</label>
+                                    <label class="custom-file-label image-label" for="instuction-0">Choose image...</label>
                                 </div>
                             </div>
                         </div>

@@ -1,0 +1,62 @@
+﻿@page "{p?}"
+@model cookbookWeb.Areas.Administrator.Pages.Users.UsersModel
+@using cookbookWeb.Models
+@using cookbookWeb.Data
+@inject UserManager<User> userManager
+@inject ApplicationDbContext db 
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="container">
+    <h5>Users</h5>
+    <div class="table-rensponsive">
+        <table class="table table-hover">
+            <thead class="thead-light text-center">
+                <tr>
+                    <th>#</th>
+                    <th>User Id</th>
+                    <th>Username</th>
+                    <th>Email address</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{  int i = 1;
+                    foreach (User user in Model.Users)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@user.Id</td>
+                            <td>@user.UserName</td>
+                            <td>@user.Email</td>
+                            <td>
+                                <div class="d-flex flex-row justify-content-center">
+                                    <a class="btn btn-primary btn-action" asp-area="Administrator" asp-page="/Users/Manage" asp-route-id="@user.Id">Manage</a>
+                                    <button class="btn btn-danger btn-action" type="button">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        i++;
+                    } 
+                }
+                <tr>
+                </tr>
+            </tbody>
+        </table>
+        @{
+        var prevDisabled = !Model.Users.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.Users.HasNextPage ? "disabled" : "";
+        }
+        <a asp-area="Administrator" asp-page="/Users/Index"
+        asp-route-p="@(Model.Users.PageIndex - 1)"
+        class="btn btn-primary @prevDisabled">
+            Previous
+        </a>
+        <a asp-area="Administrator" asp-page="/Users/Index"
+        asp-route-p="@(Model.Users.PageIndex + 1)"
+        class="btn btn-primary @nextDisabled">
+            Next
+        </a>
+    </div>
+</div>

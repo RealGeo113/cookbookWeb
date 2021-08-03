@@ -16,7 +16,7 @@ namespace cookbookWeb.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.5")
+                .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
             modelBuilder.Entity("cookbookWeb.Models.Category", b =>
@@ -74,6 +74,9 @@ namespace cookbookWeb.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("RecipeId")
                         .HasColumnType("bigint");
@@ -170,6 +173,9 @@ namespace cookbookWeb.Migrations
                     b.Property<bool>("IsEdited")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsPrivate")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
@@ -177,6 +183,9 @@ namespace cookbookWeb.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int>("Time")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Views")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -290,6 +299,9 @@ namespace cookbookWeb.Migrations
 
                     b.Property<string>("ImagePath")
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("Joined")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("LastName")
                         .HasColumnType("text");
