@@ -1,4 +1,1 @@
-﻿Admin Panel
-Change Profile picture
-Set and Change First Name, Last Name, UserName
-Recipes Ratings
+﻿

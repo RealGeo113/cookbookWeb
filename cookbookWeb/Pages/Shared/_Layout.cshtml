@@ -39,6 +39,11 @@
                                 <a class="nav-link text-dark" asp-area="Recipes" asp-page="/Index" asp-route-category="Favorites">Favorites</a>
                             </li>
                         }
+                        @if (User.IsInRole("Admin")){
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Administrator" asp-page="/Index">Admin Panel</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

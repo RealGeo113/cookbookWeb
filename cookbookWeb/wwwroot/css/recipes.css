@@ -1,6 +1,6 @@
 .category-container{
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     grid-template-rows: 60px;
     margin: 10px 0;
     width: 100%;
@@ -61,12 +61,15 @@
     opacity: 1;
 }
 
-@media only screen and (max-width: 768px) {
+.recipe-action{
+    margin-top: 10px;
+}
+/* @media only screen and (max-width: 768px) {
     .category-container{
         grid-template-columns: repeat(3, 1fr);
         grid-template-rows: repeat(2, 60px);
     }
-}
+} */
 
 @media only screen and (max-width: 600px) {
     .recipes-image-container{

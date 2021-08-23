@@ -35,7 +35,7 @@ namespace cookbookWeb.Areas.Administrator.Pages.Users
         public string EmailSort { get; set; }
         public async void OnGet(int? p)
         {
-            Users = await PaginatedList<User>.CreateAsync(_db.Users.ToList() , p ?? 1, 32);
+            Users = await PaginatedList<User>.CreateAsync(_db.Users.OrderByDescending(u => u.Id).ToList() , p ?? 1, 32);
         }
     }
 }

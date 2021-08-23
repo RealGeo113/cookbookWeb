@@ -4,7 +4,54 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Place for all your precious recipes</h1>       
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@section Stylesheets{
+    <link rel="stylesheet" href="css/index.css">
+}
+
+<div>
+    <div class="index-header row">
+        <div class="index-item">
+            <img class="index-header-image" src="/Images/index-image.png">
+        </div>
+        <div class="index-item index-header-title text-center">
+            <h1 class="display-4">Place for all your precious recipes</h1>
+        </div>
+    </div>
 </div>
+
+<div class="container index-body">
+    <div class="index-panel-1 d-flex">
+        <div class="site-desc col-md-6">
+            CookbookWeb is a simple site to save your unique recipes and share them with other people.
+        </div>
+        <div class="login col-md-6">
+            <div>
+                You can login to your account <a sp-area="Identity" asp-page="Account/Login">here.</a>
+            </div>
+            <div>
+                Or create an account <a asp-area="Identity" asp-page="Account/Register">here.</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <p>
+            During creation of this site I've learned about:
+            <ul>
+                <li>Basics of ASP.NET development</li>
+                <li>Bootstrap</li>
+                <li>Razor syntax and MVC model</li>
+                <li>Basic Javascript and JQuery</li>
+                <li>Usage of frameworks:
+                    <ul>
+                        <li>Identity Framework</li>
+                        <li>Entity Framework</li>
+                    </ul>
+                </li>
+                <li>Managing PostgreSQL database</li>
+                <li>Code first approach to databases</li>
+            </ul>
+        </p>
+    </div>
+</div>
+

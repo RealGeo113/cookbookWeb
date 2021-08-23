@@ -35,15 +35,15 @@
                 }
              }
 
-            @{
+            @if (SignInManager.IsSignedIn(User))
+            {
                 isActive = (Model.Category == "favorites") ? "category-active" : "";
+                <a class="category-link" asp-area="Recipes" asp-page="/Index" asp-route-category="Favorites">
+                    <div class="category @isActive d-flex">
+                        Favorites
+                    </div>    
+                </a>
             }
-
-            <a class="category-link" asp-area="Recipes" asp-page="/Index" asp-route-category="Favorites">
-                <div class="category @isActive d-flex">
-                    Favorites
-                </div>    
-            </a>
         </div>
     </div>
 
@@ -89,12 +89,14 @@
                     }}
                     
                 </div>
-                <div>
-                    <div class="recipe-author">By: @Html.DisplayFor(m => recipe.Author.FullName)</div>
-                    <div class="recipe-people">People: @Html.DisplayFor(m => recipe.People)</div>
-                    <div class="recipe-time">Time: @Html.DisplayFor(m => recipe.Time)</div>
-                    <div class="recipe-description">@Html.DisplayFor(m => recipe.Description)</div>
-                    <div class="recipe-action d-flex flex-row-reverse align-bottom"><a asp-area="Recipe" asp-route-id="@recipe.Id"></a></div>
+                <div class="">
+                    <div>
+                        <div class="recipe-author">By: @Html.DisplayFor(m => recipe.Author.FullName)</div>
+                        <div class="recipe-people">People: @Html.DisplayFor(m => recipe.People)</div>
+                        <div class="recipe-time">Time: @Html.DisplayFor(m => recipe.Time)</div>
+                        <div class="recipe-description">@Html.DisplayFor(m => recipe.Description)</div>
+                    </div>
+                    <div class="recipe-action d-flex flex-row-reverse align-bottom"><a asp-area="Recipe" asp-route-id="@recipe.Id">Show recipe</a></div>
                 </div>
             </div>
         </div> 

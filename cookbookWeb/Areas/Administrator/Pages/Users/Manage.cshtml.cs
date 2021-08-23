@@ -65,7 +65,9 @@ namespace cookbookWeb.Areas.Administrator.Pages.Users
 
             if(Input.Image != null){
                 string directory = Path.Combine(_environment.WebRootPath, "Images\\Users");
-                new FileInfo($"{directory}//{user.ImagePath}").Delete();
+                if(user.ImagePath != null){
+                    new FileInfo($"{directory}//{user.ImagePath}").Delete();
+                }
                 Directory.CreateDirectory(directory);
                 string FileName = Guid.NewGuid() + Path.GetExtension(Input.Image.FileName);
                 string File = Path.Combine(directory, FileName);

@@ -15,10 +15,23 @@ namespace cookbookWeb.Data
         {
             //Seed Roles
             //roleManager.RoleExistsAsync()
-            await roleManager.CreateAsync(new Role(Enums.Roles.SuperAdmin.ToString()));
-            await roleManager.CreateAsync(new Role(Enums.Roles.Admin.ToString()));
-            await roleManager.CreateAsync(new Role(Enums.Roles.Moderator.ToString()));
-            await roleManager.CreateAsync(new Role(Enums.Roles.Basic.ToString()));
+
+            
+            if(!roleManager.RoleExistsAsync("SuperAdmin").Result){
+                await roleManager.CreateAsync(new Role("SuperAdmin"));
+            }
+
+            if(!roleManager.RoleExistsAsync("Admin").Result){
+                await roleManager.CreateAsync(new Role("Admin"));
+            }
+
+            if(!roleManager.RoleExistsAsync("Moderator").Result){
+                await roleManager.CreateAsync(new Role("Moderator"));
+            }
+
+            if(!roleManager.RoleExistsAsync("Basic").Result){
+                await roleManager.CreateAsync(new Role("Basic"));
+            }
         }
 
         public static async Task SeedSuperAdminAsync(UserManager<User> userManager, RoleManager<Role> roleManager)
@@ -40,13 +53,27 @@ namespace cookbookWeb.Data
                 if (user == null)
                 {
                     await userManager.CreateAsync(defaultUser, "Qwerty123!");
-                    await userManager.AddToRoleAsync(defaultUser, Enums.Roles.Basic.ToString());
-                    await userManager.AddToRoleAsync(defaultUser, Enums.Roles.Moderator.ToString());
-                    await userManager.AddToRoleAsync(defaultUser, Enums.Roles.Admin.ToString());
-                    await userManager.AddToRoleAsync(defaultUser, Enums.Roles.SuperAdmin.ToString());
+                    await userManager.AddToRoleAsync(defaultUser, "SuperAdmin");
+                    await userManager.AddToRoleAsync(defaultUser, "Admin");
+                    await userManager.AddToRoleAsync(defaultUser, "Moderator");
+                    await userManager.AddToRoleAsync(defaultUser, "Basic");
                 }
 
             }
+        }
+
+        public static Task SeedCategories(ApplicationDbContext db){
+            var categories = db.Categories.ToList();
+
+            if (db.Categories.ToList().Count == 0){
+                db.Categories.Add(new Category{Name = "Breakfast"});
+                db.Categories.Add(new Category{Name = "Lunch"});
+                db.Categories.Add(new Category{Name = "Dinner"});
+                db.Categories.Add(new Category{Name = "Dessert"});
+            }
+
+            db.SaveChanges();
+            return Task.CompletedTask;
         }
     }
 }

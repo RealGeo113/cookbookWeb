@@ -20,7 +20,7 @@
                     </div>
                     <span asp-validation-for="InputUser.ImagePath" class="text-danger"></span>
                 </div>
-                <div class="recipe-image-container col-sm">
+                <div class="col-sm">
                     @{if(Model.DisplayedUser.ImagePath == null){
                             <img src="/Images/default-profile.png" alt="User Profile Image" id="profile-image" class="recipe-image"/>
                         }else{
@@ -42,31 +42,26 @@
                 </div>
             </div>
             <div class="form-group">
-                @*Name*@
                 <label class="control-label"><h5>Username:</h5></label>
                 <input asp-for="InputUser.UserName" class="form-control" value="@Model.DisplayedUser.UserName" required/>
                 <span asp-validation-for="InputUser.UserName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                @*Name*@
                 <label class="control-label"><h5>Email address:</h5></label>
                 <input asp-for="InputUser.Email" class="form-control" value="@Model.DisplayedUser.Email" required/>
                 <span asp-validation-for="InputUser.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                @*Name*@
                 <label class="control-label"><h5>Password:</h5></label>
                 <input asp-for="Input.Password" class="form-control"/>
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                @*Name*@
                 <label class="control-label"><h5>Confirm Password:</h5></label>
                 <input asp-for="Input.ConfirmPassword" class="form-control"/>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
             <div class="form-group">
-                @*Name*@
                 <label class="control-label"><h5>Roles</h5></label>
                 <select asp-for="Input.Role" class="form-control">
                     @{var roleSelected = false;
